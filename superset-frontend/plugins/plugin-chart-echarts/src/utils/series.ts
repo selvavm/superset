@@ -504,6 +504,15 @@ export function dedupSeries(series: SeriesOption[]): SeriesOption[] {
   });
 }
 
+export function dedupSelvaSeries(series: SeriesOption[]): SeriesOption[] {
+  let counter = 0
+  return series.map(row => {
+    counter = counter+1;
+    return {...row, xAxisIndex: counter-1, yAxisIndex: counter-1}
+  });
+
+}
+
 export function sanitizeHtml(text: string): string {
   return format.encodeHTML(text);
 }

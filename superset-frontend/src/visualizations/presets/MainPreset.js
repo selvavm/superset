@@ -54,6 +54,7 @@ import {
   EchartsTimeseriesChartPlugin,
   EchartsTimeseriesBarChartPlugin,
   EchartsTimeseriesLineChartPlugin,
+  EchartsTimeseriesRepeatLineChartPlugin,
   EchartsTimeseriesScatterChartPlugin,
   EchartsTimeseriesSmoothLineChartPlugin,
   EchartsTimeseriesStepChartPlugin,
@@ -80,6 +81,7 @@ import { PivotTableChartPlugin as PivotTableChartPluginV2 } from '@superset-ui/p
 import { HandlebarsChartPlugin } from '@superset-ui/plugin-chart-handlebars';
 import FilterBoxChartPlugin from '../FilterBox/FilterBoxChartPlugin';
 import TimeTableChartPlugin from '../TimeTable';
+import { SupersetPluginChartHelloWorld } from 'superset-plugin-chart-hello-world';
 
 export default class MainPreset extends Preset {
   constructor() {
@@ -133,6 +135,7 @@ export default class MainPreset extends Preset {
         new TimeTableChartPlugin().configure({ key: 'time_table' }),
         new WordCloudChartPlugin().configure({ key: 'word_cloud' }),
         new WorldMapChartPlugin().configure({ key: 'world_map' }),
+	new SupersetPluginChartHelloWorld().configure({ key: 'ext-hello-world' }),
         new EchartsAreaChartPlugin().configure({
           key: 'echarts_area',
         }),
@@ -145,6 +148,9 @@ export default class MainPreset extends Preset {
         new EchartsTimeseriesLineChartPlugin().configure({
           key: 'echarts_timeseries_line',
         }),
+	new EchartsTimeseriesRepeatLineChartPlugin().configure({
+	  key: 'echarts_timeseries_repeat_line',
+	}),
         new EchartsTimeseriesSmoothLineChartPlugin().configure({
           key: 'echarts_timeseries_smooth',
         }),

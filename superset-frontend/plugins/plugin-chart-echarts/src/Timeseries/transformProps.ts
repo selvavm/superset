@@ -50,6 +50,7 @@ import {
   EchartsTimeseriesFormData,
   TimeseriesChartTransformedProps,
   OrientationType,
+  EchartsTimeseriesMode,
 } from './types';
 import { DEFAULT_FORM_DATA } from './constants';
 import { ForecastSeriesEnum, ForecastValue, Refs } from '../types';
@@ -57,6 +58,7 @@ import { parseYAxisBound } from '../utils/controls';
 import {
   calculateLowerLogTick,
   dedupSeries,
+  dedupSelvaSeries,
   extractDataTotalValues,
   extractSeries,
   extractShowValueIndexes,
@@ -150,6 +152,7 @@ export default function transformProps(
     percentageThreshold,
     richTooltip,
     seriesType,
+    mode,
     showLegend,
     showValue,
     sliceId,
@@ -199,6 +202,7 @@ export default function transformProps(
     xAxisLabel = verboseMap[xAxisLabel];
   }
   const isHorizontal = orientation === OrientationType.horizontal;
+  const isRepeat = mode === EchartsTimeseriesMode.r;
   const { totalStackedValues, thresholdValues } = extractDataTotalValues(
     rebasedData,
     {
@@ -472,6 +476,10 @@ export default function transformProps(
     nameGap: convertInteger(yAxisTitleMargin),
     nameLocation: yAxisTitlePosition === 'Left' ? 'middle' : 'end',
   };
+  let grid: any = {
+    ...defaultGrid,
+    ...padding,
+  }
 
   if (isHorizontal) {
     [xAxis, yAxis] = [yAxis, xAxis];
@@ -479,12 +487,19 @@ export default function transformProps(
     yAxis.inverse = true;
   }
 
+  if (isRepeat) {
+    // alert(mode);
+    grid = [{...grid, top: '1%', height: '40%'}, {...grid, top: '45%', height: '40%'}]
+    // console.log(xAxis);
+    // xAxis.gridIndex = 1;
+    xAxis = [{...xAxis, gridIndex: 0}, {...xAxis, gridIndex: 1}];
+    yAxis = [{...yAxis, gridIndex: 0}, {...yAxis, gridIndex: 1}];
+    // console.log(xAxis);  
+  }
+
   const echartOptions: EChartsCoreOption = {
     useUTC: true,
-    grid: {
-      ...defaultGrid,
-      ...padding,
-    },
+    grid,
     xAxis,
     yAxis,
     tooltip: {
@@ -545,7 +560,7 @@ export default function transformProps(
       ),
       data: legendData as string[],
     },
-    series: dedupSeries(series),
+    series: isRepeat? dedupSelvaSeries(dedupSeries(series)): dedupSeries(series),
     toolbox: {
       show: zoomable,
       top: TIMESERIES_CONSTANTS.toolboxTop,
@@ -563,18 +578,29 @@ export default function transformProps(
     dataZoom: zoomable
       ? [
           {
-            type: 'slider',
+            type: 'inside',
             start: TIMESERIES_CONSTANTS.dataZoomStart,
             end: TIMESERIES_CONSTANTS.dataZoomEnd,
             bottom: TIMESERIES_CONSTANTS.zoomBottom,
+            xAxisIndex: isRepeat? [0,1]:[0],
+
           },
         ]
       : [],
+    axisPointer: {
+      link: [
+        {
+          xAxisIndex: 'all'
+        }
+      ]
+    },
   };
 
   const onFocusedSeries = (seriesName: string | null) => {
     focusedSeries = seriesName;
   };
+
+  console.log(echartOptions)
 
   return {
     echartOptions,

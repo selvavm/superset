@@ -25,6 +25,7 @@ import {
   OrientationType,
   EchartsTimeseriesSeriesType,
   EchartsTimeseriesFormData,
+  EchartsTimeseriesMode,
 } from './types';
 import {
   DEFAULT_LEGEND_FORM_DATA,
@@ -55,6 +56,7 @@ export const DEFAULT_FORM_DATA: EchartsTimeseriesFormData = {
   orderDesc: true,
   rowLimit: 10000,
   seriesType: EchartsTimeseriesSeriesType.Line,
+  mode: EchartsTimeseriesMode.s,
   stack: false,
   tooltipTimeFormat: 'smart_date',
   truncateYAxis: false,

@@ -19,6 +19,7 @@
 import { LegendOrientation } from './types';
 
 export const defaultGrid = {
+  show: true,
   containLabel: true,
 };
 

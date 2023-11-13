@@ -52,6 +52,11 @@ export enum EchartsTimeseriesSeriesType {
   End = 'end',
 }
 
+export enum EchartsTimeseriesMode {
+  r = 'r',
+  s = 's',
+}
+
 export type EchartsTimeseriesFormData = QueryFormData & {
   annotationLayers: AnnotationLayer[];
   area: boolean;
@@ -72,6 +77,7 @@ export type EchartsTimeseriesFormData = QueryFormData & {
   orderDesc: boolean;
   rowLimit: number;
   seriesType: EchartsTimeseriesSeriesType;
+  mode?: EchartsTimeseriesMode;
   stack: StackType;
   timeCompare?: string[];
   tooltipTimeFormat?: string;
