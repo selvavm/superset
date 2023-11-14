@@ -487,11 +487,9 @@ export default function transformProps(
     yAxis.inverse = true;
   }
 
-  console.log(series);
   if (isRepeat) {
-    const nCharts = series.length;
+    const nCharts = series.length/metrics.length;
     const height = 0.8 * 100 / nCharts;
-    console.log(height);
     const grid_arr = [];
     const xAxis_arr = [];
     const yAxis_arr =[];
@@ -507,6 +505,20 @@ export default function transformProps(
     grid = grid_arr;
     xAxis = xAxis_arr;
     yAxis = yAxis_arr;
+    const dims = (metrics.length == 1) ? Array.from(new Set(Object.values(labelMap).slice(1).map(row => row[0]))) : Array.from(new Set(Object.values(labelMap).slice(1).map(row => row[1])));
+    const dimsGridIndex = new Map<string, number>();
+    for (let [index, dim] of dims.entries()) {
+      dimsGridIndex.set(dim, index);
+    } 
+    const selvaseries: SeriesOption[] = series.map(row => {
+      let { id } = row;
+      if (id !== undefined) {
+        const dim = labelMap[id]?.length==1? labelMap[id]?.[0]:labelMap[id]?.[1];
+        const gridIndex = dimsGridIndex.get(dim);
+        return {...row, xAxisIndex: gridIndex, yAxisIndex: gridIndex}
+      }
+    });
+    series.splice(0, series.length, ...selvaseries);
   }
 
   const echartOptions: EChartsCoreOption = {
@@ -572,7 +584,7 @@ export default function transformProps(
       ),
       data: legendData as string[],
     },
-    series: isRepeat? dedupSelvaSeries(dedupSeries(series)): dedupSeries(series),
+    series: dedupSeries(series),
     toolbox: {
       show: zoomable,
       top: TIMESERIES_CONSTANTS.toolboxTop,
@@ -612,7 +624,6 @@ export default function transformProps(
     focusedSeries = seriesName;
   };
 
-  console.log(echartOptions)
 
   return {
     echartOptions,
