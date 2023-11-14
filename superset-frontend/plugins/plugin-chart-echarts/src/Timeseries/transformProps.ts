@@ -487,14 +487,26 @@ export default function transformProps(
     yAxis.inverse = true;
   }
 
+  console.log(series);
   if (isRepeat) {
-    // alert(mode);
-    grid = [{...grid, top: '1%', height: '40%'}, {...grid, top: '45%', height: '40%'}]
-    // console.log(xAxis);
-    // xAxis.gridIndex = 1;
-    xAxis = [{...xAxis, gridIndex: 0}, {...xAxis, gridIndex: 1}];
-    yAxis = [{...yAxis, gridIndex: 0}, {...yAxis, gridIndex: 1}];
-    // console.log(xAxis);  
+    const nCharts = series.length;
+    const height = 0.8 * 100 / nCharts;
+    console.log(height);
+    const grid_arr = [];
+    const xAxis_arr = [];
+    const yAxis_arr =[];
+    for (let i = 0; i < nCharts; i++) {
+      const top = height*0.1+i*height*1.2;
+      const subgrid = {...grid, top:`${top}%`, height: `${height}%`};
+      const subxaxis = {...xAxis, gridIndex: i};
+      const subyaxis = {...yAxis, gridIndex: i};
+      grid_arr.push(subgrid);
+      xAxis_arr.push(subxaxis);
+      yAxis_arr.push(subyaxis);
+    }
+    grid = grid_arr;
+    xAxis = xAxis_arr;
+    yAxis = yAxis_arr;
   }
 
   const echartOptions: EChartsCoreOption = {
